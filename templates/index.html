@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>چت‌بات اورژانس</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap');
+        
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        .chat-bubble {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            margin-bottom: 12px;
+            line-height: 1.6;
+            position: relative;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        .user-bubble {
+            background-color: #dcf8c6;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .bot-bubble {
+            background-color: #f1f0f0;
+            margin-right: auto;
+            border-bottom-left-radius: 4px;
+        }
+        
+        .typing-indicator {
+            display: flex;
+            padding: 12px 16px;
+            background-color: #f1f0f0;
+            border-radius: 18px;
+            width: fit-content;
+            margin-bottom: 12px;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #666;
+            border-radius: 50%;
+            margin: 0 3px;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes typingAnimation {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .emergency-btn {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Header -->
+        <header class="flex items-center justify-between mb-8">
+            <div class="flex items-center">
+                <div class="bg-red-100 p-3 rounded-full mr-3">
+                    <i class="fas fa-ambulance text-red-600 text-xl"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-800">چت‌بات اورژانس</h1>
+            </div>
+            <button class="emergency-btn bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full font-medium transition-all">
+                <i class="fas fa-bell mr-2"></i> وضعیت اضطراری
+            </button>
+        </header>
+        
+        <!-- Chat Container -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <!-- Chat Header -->
+            <div class="bg-blue-600 text-white px-4 py-3 flex items-center">
+                <div class="bg-white p-1 rounded-full mr-3">
+                    <i class="fas fa-user-md text-blue-600"></i>
+                </div>
+                <div>
+                    <h2 class="font-bold">دستیار پزشکی اورژانس</h2>
+                    <p class="text-xs opacity-80">پاسخ‌ها بر اساس پروتکل‌های اورژانس ارائه می‌شوند</p>
+                </div>
+                <div class="mr-auto flex space-x-2 space-x-reverse">
+                    <button class="p-1 rounded-full hover:bg-blue-500 transition">
+                        <i class="fas fa-phone-alt text-xs"></i>
+                    </button>
+                    <button class="p-1 rounded-full hover:bg-blue-500 transition">
+                        <i class="fas fa-info-circle text-xs"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Chat Messages -->
+            <div id="chat-messages" class="p-4 h-96 overflow-y-auto flex flex-col">
+                <!-- Welcome Message -->
+                <div class="bot-bubble chat-bubble">
+                    <div class="font-bold mb-1 text-blue-600">دستیار اورژانس:</div>
+                    سلام! من دستیار پزشکی اورژانس هستم. می‌توانم در مورد پروتکل‌های اورژانس به شما کمک کنم. چه سوالی دارید؟
+                </div>
+                
+                <!-- Messages will be added here dynamically -->
+            </div>
+            
+            <!-- Input Area -->
+            <div class="border-t border-gray-200 p-4 bg-gray-50">
+                <form id="chat-form" class="flex items-center gap-2">
+                    <div class="flex-1 relative">
+                        <input 
+                            type="text" 
+                            id="user-input" 
+                            placeholder="سوال خود را بنویسید..." 
+                            class="w-full px-4 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            autocomplete="off"
+                        >
+                        <button type="button" class="absolute left-3 top-3 text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                    </div>
+                    <button 
+                        type="submit" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full transition"
+                        title="ارسال"
+                    >
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                    <button 
+                        type="button" 
+                        id="tts-btn" 
+                        class="bg-gray-200 hover:bg-gray-300 text-gray-700 p-3 rounded-full transition"
+                        title="خواندن صوتی"
+                    >
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                </form>
+                
+                <div class="mt-3 flex justify-center gap-3">
+                    <button class="quick-question-btn text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full transition">
+                        <i class="fas fa-bolt text-yellow-500 mr-1"></i> اقدامات اولیه در سوختگی
+                    </button>
+                    <button class="quick-question-btn text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full transition">
+                        <i class="fas fa-bolt text-yellow-500 mr-1"></i> علائم سکته قلبی
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer class="mt-6 text-center text-xs text-gray-500">
+            <p>این چت‌بات فقط برای اهداف آموزشی است. در موارد اضطراری با 115 تماس بگیرید.</p>
+            <p class="mt-1">© 2023 سیستم اورژانس پزشکی - پیشتاز افکار هوشمند</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatForm = document.getElementById('chat-form');
+            const userInput = document.getElementById('user-input');
+            const chatMessages = document.getElementById('chat-messages');
+            const ttsBtn = document.getElementById('tts-btn');
+            
+            // Sample responses for demo purposes
+            const sampleResponses = {
+                "سلام": "سلام! چطور می‌توانم کمک کنم؟",
+                "اقدامات اولیه در سوختگی": "1. محل سوختگی را با آب خنک (نه یخ) به مدت 10-15 دقیقه شستشو دهید. 2. از یخ، کره یا مواد چرب استفاده نکنید. 3. اگر تاول وجود دارد، آن را نترکانید. 4. با یک گاز استریل پوشش دهید. 5. در سوختگی‌های شدید یا وسیع فوراً به مرکز درمانی مراجعه کنید.",
+                "علائم سکته قلبی": "علائم شایع شامل: درد یا فشار در قفسه سینه که ممکن است به بازوها، گردن، فک یا پشت انتشار یابد، تنگی نفس، تعریق سرد، تهوع، سرگیجه و ضعف. در صورت مشاهده این علائم فوراً با اورژانس 115 تماس بگیرید.",
+                "کمک های اولیه در خونریزی": "1. فشار مستقیم با یک گاز تمیز یا پارچه روی زخم وارد کنید. 2. عضو آسیب دیده را بالا نگه دارید. 3. در صورت ادامه خونریزی، فشار را حفظ کرده و به مرکز درمانی مراجعه کنید. 4. از تورنیکه فقط در موارد خونریزی شدید شریانی استفاده شود."
+            };
+            
+            // Add message to chat
+            function addMessage(role, message) {
+                const bubble = document.createElement('div');
+                bubble.className = role === 'user' ? 'user-bubble chat-bubble' : 'bot-bubble chat-bubble';
+                
+                if (role === 'bot') {
+                    bubble.innerHTML = `<div class="font-bold mb-1 text-blue-600">دستیار اورژانس:</div>${message}`;
+                } else {
+                    bubble.textContent = message;
+                }
+                
+                chatMessages.appendChild(bubble);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Show typing indicator
+            function showTyping() {
+                const typingDiv = document.createElement('div');
+                typingDiv.className = 'typing-indicator';
+                typingDiv.id = 'typing-indicator';
+                typingDiv.innerHTML = `
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                `;
+                chatMessages.appendChild(typingDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Hide typing indicator
+            function hideTyping() {
+                const typing = document.getElementById('typing-indicator');
+                if (typing) {
+                    typing.remove();
+                }
+            }
+            
+            // Simulate API call with delay
+            async function getBotResponse(userMessage) {
+            showTyping();
+            
+            try {
+                const formData = new FormData();
+                formData.append("query", userMessage);
+
+                const response = await fetch("/chat", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await response.json();
+                hideTyping();
+                return data.response;
+            } catch (error) {
+                hideTyping();
+                return "❌ خطا در ارتباط با سرور. لطفاً دوباره تلاش کنید.";
+            }
+        }
+
+            
+            // Handle form submission
+            chatForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const message = userInput.value.trim();
+                
+                if (message) {
+                    // Add user message
+                    addMessage('user', message);
+                    userInput.value = '';
+                    
+                    // Show typing indicator
+                    showTyping();
+                    
+                    // Get bot response
+                    const response = await getBotResponse(message);
+                    
+                    // Hide typing and add bot response
+                    hideTyping();
+                    addMessage('bot', response);
+                }
+            });
+            
+            // TTS button
+            ttsBtn.addEventListener('click', function () {
+            if (!('webkitSpeechRecognition' in window)) {
+                alert("مرورگر شما از تشخیص گفتار پشتیبانی نمی‌کند.");
+                return;
+            }
+
+            const recognition = new webkitSpeechRecognition();
+            recognition.lang = "fa-IR";
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.start();
+
+            recognition.onstart = () => {
+                ttsBtn.classList.add("bg-yellow-300");
+                ttsBtn.title = "در حال گوش دادن...";
+            };
+
+            recognition.onresult = function (event) {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById("user-input").value = transcript;
+            };
+
+            recognition.onerror = function (event) {
+                alert("خطا در تشخیص گفتار: " + event.error);
+            };
+
+            recognition.onend = () => {
+                ttsBtn.classList.remove("bg-yellow-300");
+                ttsBtn.title = "خواندن صوتی";
+            };
+        });
+
+            
+            // Quick question buttons
+            document.querySelectorAll('.quick-question-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const question = this.textContent.trim();
+                    userInput.value = question;
+                    userInput.focus();
+                });
+            });
+        });
+    </script>
+</body>
+</html>
