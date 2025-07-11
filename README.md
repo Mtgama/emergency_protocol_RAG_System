@@ -2,7 +2,7 @@
 
 **نسخه فارسی یک دستیار پزشکی برای پاسخ به سوالات اضطراری بر اساس پروتکل‌های اورژانس**
 
-[![Hugging Face Spaces](https://img.shields.io/badge/HuggingFace-Space-blue?logo=huggingface)](https://huggingface.co/spaces/YourUsername/emergency-chatbot)
+[![Hugging Face Spaces](https://img.shields.io/badge/HuggingFace-Space-blue?logo=huggingface)](https://huggingface.co/spaces/Mtgama/emergency_chatbot)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 ---
@@ -34,7 +34,7 @@
 |------|-----------|
 | رابط کاربری | `HTML`, `TailwindCSS`, `FontAwesome`, `JavaScript` |
 | بک‌اند | `Python`, `FastAPI`, `OpenAI API`, `Vectorize API` |
-| هاست | [Hugging Face Spaces](https://huggingface.co/spaces) |
+| هاست | [Hugging Face Spaces](https://huggingface.co/spaces/Mtgama/emergency_chatbot) |
 
 ---
 
